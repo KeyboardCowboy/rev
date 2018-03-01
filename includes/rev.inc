@@ -52,3 +52,15 @@ function rev_get_user_api($mode) {
 function rev_get_email_address($mode) {
   return variable_get('rev_' . $mode . '_email_address', '');
 }
+
+/**
+ * Place an order to transcribe a file by it's file id.
+ *
+ * @param int $fid
+ *   A managed file id.
+ */
+function rev_transcribe_file($fid) {
+  // Load file.
+  // Generate package to sent to Rev.
+  // @todo: Submit order to rev.
+}

@@ -4,6 +4,7 @@
  * Drupal hooks.
  */
 
+define('REV_MODE_DISABLED', 'disabled');
 define('REV_MODE_SANDBOX', 'sandbox');
 define('REV_MODE_PROD', 'prod');
 
@@ -25,10 +26,89 @@ function rev_menu() {
   return $items;
 }
 
+/**
+ * Implements hook_field_info_alter().
+ */
+function rev_field_info_alter(&$info) {
+  $info['file']['instance_settings']['rev_is_transcribable'] = 0;
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function rev_form_alter(&$form, &$form_state, $form_id) {
+  // Alter the field instance settings form to store a value to determine if
+  // a file field is eligible to be transcribed.
+  if ($form_id === 'field_ui_field_edit_form') {
+    $form['instance']['settings']['rev_is_transcribable'] = array(
+      '#type' => 'checkbox',
+      '#title' => t("Transcribable"),
+      '#description' => t("The contents of this field may be sent to rev.com for transcription.<br />Users will be prompted when an entity is saved before orders are placed."),
+      '#weight' => 20,
+      '#default_value' => $form['#instance']['settings']['rev_is_transcribable'],
+    );
+  }
+}
+
+/**
+ * Implements hook_field_widget_form_alter().
+ */
+function rev_field_widget_form_alter(&$element, &$form_state, $context) {
+  if ($context['field']['type'] === 'file') {
+    foreach ($element as &$item) {
+      $item['#process'][] = 'rev_file_field_widget_process';
+    }
+  }
+}
+
+function rev_file_field_widget_process($element, &$form_state, &$form) {
+  $item = $element['#value'];
+  $item['fid'] = $element['fid']['#value'];
+  $form_state['rev_check_fields'] = array();
+  $instance = field_widget_instance($element, $form_state);
+
+  // Add the transcription field if enabled.
+  if ($instance['settings']['rev_is_transcribable']) {
+    $element['rev_transcribe'] = array(
+      '#type' => empty($item['fid']) ? 'hidden' : 'checkbox',
+      '#title' => t('Transcribe File'),
+      '#description' => t("Send this file to Rev.com for transcription."),
+      '#attributes' => array('class' => array('file-display')),
+    );
+
+    if (!empty($element['#field_name'])) {
+      $form_state['rev_check_fields'][] = $element['#field_name'];
+    }
+  }
+  else {
+    $element['rev_is_transcribable'] = array(
+      '#type' => 'hidden',
+      '#value' => '0',
+    );
+  }
+
+  $form['#submit'][] = 'rev_file_field_submit';
+
+  return $element;
+}
+
+function rev_file_field_submit($form, &$form_state) {
+  foreach ($form_state['rev_check_fields'] as $field) {
+    if (isset($form_state['values'][$field])) {
+      $lang = $form_state['values']['language'];
+      foreach ($form_state['values'][$field][$lang] as $field_instance) {
+        if ($field_instance['rev_transcribe'] === 1) {
+          // @todo: Implement confirmation form.
+          rev_transcribe_file($field_instance['fid']);
+        }
+      }
+    }
+  }
+}
+
+
 // @todo: V1
-// @todo: Add a setting to file fields asking if they are transcribable.
 // @todo: If a file is transcribable, ask for a destination field in which to store the transcription.
-// @todo: Hook into file fields when they are attached to an entity that is submitted and ask to transcribe the file, only if the file id changed.
 // @todo: Implement a cron task to periodically check for completed transcriptions.
 
 // Rev can send notifications upon order completion via webhooks, but this will
