@@ -1,0 +1,36 @@
+<?php
+/**
+ * @file
+ * Drupal hooks.
+ */
+
+define('REV_MODE_SANDBOX', 'sandbox');
+define('REV_MODE_PROD', 'prod');
+
+require_once __DIR__ . '/includes/rev.inc';
+
+/**
+ * Implements hook_menu().
+ */
+function rev_menu() {
+  $items['admin/config/services/rev'] = array(
+    'title' => 'Rev.com',
+    'description' => 'Manage Rev.com transcription settings.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('rev_settings_form'),
+    'access arguments' => array('administer rev account'),
+    'file' => 'includes/rev.admin.inc',
+  );
+
+  return $items;
+}
+
+// @todo: V1
+// @todo: Add a setting to file fields asking if they are transcribable.
+// @todo: If a file is transcribable, ask for a destination field in which to store the transcription.
+// @todo: Hook into file fields when they are attached to an entity that is submitted and ask to transcribe the file, only if the file id changed.
+// @todo: Implement a cron task to periodically check for completed transcriptions.
+
+// Rev can send notifications upon order completion via webhooks, but this will
+// not work or Lullabot.com as it's behind a firewall.  We should account for
+// both modes of communication: one-way and two-way.

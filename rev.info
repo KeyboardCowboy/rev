@@ -1,0 +1,10 @@
+name = "Rev Transcriptions"
+description = "Transcribe audio and video files using Rev.com."
+core = 7.x
+version = VERSION
+package = "Web Services"
+configure = "admin/config/services/rev"
+
+;dependencies[]
+
+files[] = "includes/rev.admin.inc"
