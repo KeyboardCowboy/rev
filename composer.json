@@ -1,0 +1,17 @@
+{
+    "name": "drupal/rev",
+    "description": "Transcribe audio and video files using Rev.com.",
+    "type": "drupal-module",
+    "license": "GPL2",
+    "authors": [
+        {
+            "name": "KeyboardCowboy",
+            "email": "chris@lullabot.com"
+        }
+    ],
+    "minimum-stability": "beta",
+    "prefer-stable": true,
+    "require": {
+        "unl/rev-api": "0.*"
+    }
+}

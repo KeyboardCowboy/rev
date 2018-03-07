@@ -11,7 +11,7 @@
  *   The current rev mode: sandbox | prod
  */
 function rev_get_mode() {
-  return variable_get('rev_mode', REV_MODE_SANDBOX);
+  return variable_get('rev_mode', DrupalRev::MODE_SANDBOX);
 }
 
 /**
@@ -23,7 +23,7 @@ function rev_get_mode() {
  * @return string
  *   The client API key or an empty string if it's not set.
  */
-function rev_get_client_api($mode) {
+function rev_get_client_key($mode) {
   return variable_get('rev_' . $mode . '_client_api_key', '');
 }
 
@@ -36,7 +36,7 @@ function rev_get_client_api($mode) {
  * @return string
  *   The User API Key.
  */
-function rev_get_user_api($mode) {
+function rev_get_user_key($mode) {
   return variable_get('rev_' . $mode . '_user_api_key', '');
 }
 
@@ -61,6 +61,14 @@ function rev_get_email_address($mode) {
  */
 function rev_transcribe_file($fid) {
   // Load file.
-  // Generate package to sent to Rev.
-  // @todo: Submit order to rev.
+  if ($file = file_load($fid)) {
+    DrupalRev::connect()->transcribeFile($file);
+    // Generate package to sent to Rev.
+    // @todo: Submit order to rev.
+    // Store response id.
+
+  }
+  else {
+    // @todo: Report failure.
+  }
 }

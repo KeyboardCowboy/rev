@@ -5,6 +5,8 @@ version = VERSION
 package = "Web Services"
 configure = "admin/config/services/rev"
 
-;dependencies[]
+dependencies[] = composer_manager
+dependencies[] = xautoload
 
 files[] = "includes/rev.admin.inc"
+files[] = "src/DrupalRev.php"

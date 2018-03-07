@@ -4,11 +4,15 @@
  * Drupal hooks.
  */
 
-define('REV_MODE_DISABLED', 'disabled');
-define('REV_MODE_SANDBOX', 'sandbox');
-define('REV_MODE_PROD', 'prod');
-
 require_once __DIR__ . '/includes/rev.inc';
+
+/**
+ * Implements hook_xautoload().
+ */
+function rev_xautoload($adapter) {
+  $vendor_path = trim(str_replace(DRUPAL_ROOT, '', composer_manager_vendor_dir()), '/');
+  $adapter->absolute()->composerDir($vendor_path);
+}
 
 /**
  * Implements hook_menu().

@@ -9,7 +9,7 @@
  */
 function rev_settings_form($form, &$form_state) {
   // Display an informative message if no data has been provided.
-  if (empty(rev_get_client_api(REV_MODE_SANDBOX)) && empty(rev_get_client_api(REV_MODE_SANDBOX))) {
+  if (empty(rev_get_client_key(DrupalRev::MODE_SANDBOX)) && empty(rev_get_client_key(DrupalRev::MODE_PROD))) {
     drupal_set_message(t('In order to get Rev.com transcriptions, you must sign up for an API account at <a href="https://www.rev.com/api" target="_blank">https://www.rev.com/api</a>.'), 'warning');
   }
 
@@ -30,31 +30,31 @@ function rev_settings_form($form, &$form_state) {
     '#type' => 'fieldset',
     '#title' => t("Sandbox Settings"),
     '#collapsible' => TRUE,
-    '#collapsed' => (rev_get_mode() !== REV_MODE_SANDBOX),
+    '#collapsed' => (rev_get_mode() !== DrupalRev::MODE_SANDBOX),
   );
   $form['sandbox']['rev_sandbox_client_api_key'] = array(
     '#type' => 'textfield',
     '#title' => t("Sandbox Client API Key"),
     '#size' => 40,
-    '#default_value' => rev_get_client_api(REV_MODE_SANDBOX),
+    '#default_value' => rev_get_client_key(DrupalRev::MODE_SANDBOX),
   );
   $form['sandbox']['rev_sandbox_user_api_key'] = array(
     '#type' => 'textfield',
     '#title' => t("Sandbox User API Key"),
     '#size' => 40,
-    '#default_value' => rev_get_user_api(REV_MODE_SANDBOX),
+    '#default_value' => rev_get_user_key(DrupalRev::MODE_SANDBOX),
   );
   $form['sandbox']['rev_sandbox_email'] = array(
     '#type' => 'textfield',
     '#title' => t("Sandbox Email Address"),
     '#size' => 40,
-    '#default_value' => rev_get_email_address(REV_MODE_SANDBOX),
+    '#default_value' => rev_get_email_address(DrupalRev::MODE_SANDBOX),
   );
   // $form['sandbox']['rev_sandbox_password'] = array(
   //   '#type' => 'textfield',
   //   '#title' => t("Sandbox Password"),
   //   '#size' => 40,
-  //   '#default_value' => rev_get_password(REV_MODE_SANDBOX),
+  //   '#default_value' => rev_get_password(DrupalRev::MODE_SANDBOX),
   // );
 
   // Get the production settings.
@@ -62,31 +62,31 @@ function rev_settings_form($form, &$form_state) {
     '#type' => 'fieldset',
     '#title' => t("Production Settings"),
     '#collapsible' => TRUE,
-    '#collapsed' => (rev_get_mode() !== REV_MODE_PROD),
+    '#collapsed' => (rev_get_mode() !== DrupalRev::MODE_PROD),
   );
   $form['prod']['rev_prod_client_api_key'] = array(
     '#type' => 'textfield',
     '#title' => t("Production Client API Key"),
     '#size' => 40,
-    '#default_value' => rev_get_client_api(REV_MODE_PROD),
+    '#default_value' => rev_get_client_key(DrupalRev::MODE_PROD),
   );
   $form['prod']['rev_prod_user_api_key'] = array(
     '#type' => 'textfield',
     '#title' => t("Production User API Key"),
     '#size' => 40,
-    '#default_value' => rev_get_user_api(REV_MODE_PROD),
+    '#default_value' => rev_get_user_key(DrupalRev::MODE_PROD),
   );
   $form['prod']['rev_prod_email'] = array(
     '#type' => 'textfield',
     '#title' => t("Production Email Address"),
     '#size' => 40,
-    '#default_value' => rev_get_email_address(REV_MODE_PROD),
+    '#default_value' => rev_get_email_address(DrupalRev::MODE_PROD),
   );
   // $form['prod']['rev_prod_password'] = array(
   //   '#type' => 'textfield',
   //   '#title' => t("Production Password"),
   //   '#size' => 40,
-  //   '#default_value' => rev_get_password(REV_MODE_PROD),
+  //   '#default_value' => rev_get_password(DrupalRev::MODE_PROD),
   // );
 
   return system_settings_form($form);
